@@ -6737,23 +6737,18 @@ function Library:CreateWindow(WindowInfo)
     end
 
     function Window:AddTab(...)
-        local Name = nil
         local Icon = nil
         local Description = nil
 
         if select("#", ...) == 1 and typeof(...) == "table" then
             local Info = select(1, ...)
-            Name = Info.Name or "Tab"
             Icon = Info.Icon
             Description = Info.Description
         else
-            Name = select(1, ...)
-            Icon = select(2, ...)
-            Description = select(3, ...)
+            Icon = select(1, ...)
+            Description = select(2, ...)
         end
 
-        local TabButton: TextButton
-        local TabLabel
         local TabIcon
 
         local TabContainer
@@ -6762,38 +6757,8 @@ function Library:CreateWindow(WindowInfo)
 
         Icon = Library:GetCustomIcon(Icon)
         do
-            TabButton = New("TextButton", {
-                BackgroundColor3 = "MainColor",
-                BackgroundTransparency = 1,
-                Size = UDim2.new(1, 0, 0, 40),
-                Text = "",
-                Parent = Tabs,
-            })
-
-            local ButtonPadding = New("UIPadding", {
-                PaddingBottom = UDim.new(0, LayoutState.IsCompact and 7 or 11),
-                PaddingLeft = UDim.new(0, LayoutState.IsCompact and 14 or 12),
-                PaddingRight = UDim.new(0, LayoutState.IsCompact and 14 or 12),
-                PaddingTop = UDim.new(0, LayoutState.IsCompact and 7 or 11),
-                Parent = TabButton,
-            })
-            table.insert(LayoutRefs.TabPadding, ButtonPadding)
-
-            TabLabel = New("TextLabel", {
-                BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(30, 0),
-                Size = UDim2.new(1, -30, 1, 0),
-                Text = Name,
-                TextSize = 16,
-                TextTransparency = 0.5,
-                TextXAlignment = Enum.TextXAlignment.Left,
-                Visible = not LayoutState.IsCompact,
-                Parent = TabButton,
-            })
-            table.insert(LayoutRefs.TabLabels, TabLabel)
-
-            if Icon then
-                TabIcon = New("ImageLabel", {
+           if Icon then
+                TabIcon = New("ImageButton", {
                     Image = Icon.Url,
                     ImageColor3 = Icon.Custom and "White" or "AccentColor",
                     ImageRectOffset = Icon.ImageRectOffset,
@@ -6801,9 +6766,18 @@ function Library:CreateWindow(WindowInfo)
                     ImageTransparency = 0.5,
                     Size = UDim2.fromScale(1, 1),
                     SizeConstraint = Enum.SizeConstraint.RelativeYY,
-                    Parent = TabButton,
+                    Parent = Tabs,
                 })
-            end
+			end
+								
+            local ButtonPadding = New("UIPadding", {
+                PaddingBottom = UDim.new(0, LayoutState.IsCompact and 7 or 11),
+                PaddingLeft = UDim.new(0, LayoutState.IsCompact and 14 or 12),
+                PaddingRight = UDim.new(0, LayoutState.IsCompact and 14 or 12),
+                PaddingTop = UDim.new(0, LayoutState.IsCompact and 7 or 11),
+                Parent = TabIcon,
+            })
+            table.insert(LayoutRefs.TabPadding, ButtonPadding)
 
             --// Tab Container \\--
             TabContainer = New("Frame", {
